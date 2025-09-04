@@ -1,0 +1,21 @@
+module.exports = (sequelize, DataTypes) => {
+    const User = sequelize.define('User', {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        name: { type: DataTypes.STRING, allowNull: false },
+        email: { type: DataTypes.STRING, allowNull: false, unique: true, validate: { isEmail: true } },
+        password: { type: DataTypes.STRING, allowNull: false },
+        isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
+        passwordUpdated: { type: DataTypes.BOOLEAN, defaultValue: false }
+    }, {
+        tableName: 'users',
+        timestamps: true,
+    });
+
+    User.associate = (models) => {
+        User.belongsToMany(models.Hostel, { through: models.HostelUserRoleMapping, foreignKey: 'userId', as: 'hostels' });
+        User.belongsToMany(models.Role, { through: models.HostelUserRoleMapping, foreignKey: 'userId', as: 'roles' });
+        User.hasMany(models.HostelUserRoleMapping, { foreignKey: 'userId' });
+        User.hasMany(models.RoomAllocation, { foreignKey: 'userId' });
+    };
+    return User;
+};
