@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             references: { model: 'roles', key: 'id' },
             onDelete: 'CASCADE',
         },
+        isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
     }, {
         tableName: 'hostelUserRoleMappings',
         timestamps: true

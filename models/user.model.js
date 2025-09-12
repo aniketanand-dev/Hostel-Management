@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         email: { type: DataTypes.STRING, allowNull: false, unique: true, validate: { isEmail: true } },
         password: { type: DataTypes.STRING, allowNull: false },
         isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
+        isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
         passwordUpdated: { type: DataTypes.BOOLEAN, defaultValue: false }
     }, {
         tableName: 'users',

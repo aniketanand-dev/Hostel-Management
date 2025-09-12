@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { createHostel, createSuperAdmin,
-    createStudent,
-    createStaff,
+const { createHostelWithSuperAdmin,
+    createUser,
     getRoles,
     sendOtp,
     verifyOtp,
@@ -20,21 +19,30 @@ const { getHome } = require('./../controllers/home.controller');
 
 const { verifyToken } = require('./../middleware/auth.middleware');
 
-// 1. Create Hostel
-// Body: { hostelName, location, capacity }
-router.post('/hostel', createHostel);
+// 1. Create Hostel with admin
+// Body: {
+//    "hostelName": "Green Hostel",
+//    "location": "City Center",
+//    "capacity": 150,
+//    "admin": {
+//        "name": "Admin User",
+//        "email": "admin@example.com",
+//        "password": "securepassword"
+//    }
+//}
+router.post('/hostel', createHostelWithSuperAdmin);
 
-// 2. Create Super Admin for Hostel
-// Body: { name, email, password, hostelId }
-router.post('/superadmin', createSuperAdmin);
 
-// 3. Create Student
-// Body: { name, email, password, hostelId, role: 'Student' }
-router.post('/student', createStudent);
+// 3. Create User
+//Body: {
+//    "name": "John Doe",
+//    "email": "john@example.com",
+//    "password": "password123",
+//    "hostelId": 1,
+//    "roleName": "STUDENT"
+//}
 
-// 4. Create Staff
-// Body: { name, email, password, hostelId, role: 'Staff' }
-router.post('/staff', createStaff);
+router.post('/user', createUser);
 
 // 5. Get all Roles
 router.get('/roles', getRoles);

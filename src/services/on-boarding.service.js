@@ -4,67 +4,6 @@ const { generateOtp } = require('./../utils/otp.util');
 const { sendEmail } = require('./../utils/email.util');
 const { generateLoginToken } = require('../services/jwt.service');
 
-exports.createHostel = async ({ hostelName, location, capacity }) => {
-    const t = await sequelize.transaction();
-    try {
-        const hostel = await Hostel.create(
-            { hostelName, location, capacity },
-            { transaction: t }
-        );
-
-        await t.commit();
-        return hostel;
-    } catch (err) {
-        await t.rollback();
-        throw err;
-    }
-};
-
-exports.createUserWithRole = async ({ name, email, password, hostelId, roleName }) => {
-    const t = await sequelize.transaction();
-    try {
-        let user = await User.findOne({ where: { email }, transaction: t });
-
-        if (!user) {
-            const hashedPassword = await hashPassword(password);
-            user = await User.create(
-                { name, email, password: hashedPassword },
-                { transaction: t }
-            );
-        }
-
-        const role = await Role.findOne({ where: { name: roleName }, transaction: t });
-        if (!role) throw new Error(`${roleName} role not found`);
-
-        const existingMapping = await HostelUserRoleMapping.findOne({
-            where: {
-                userId: user.id,
-                hostelId,
-                roleId: role.id
-            },
-            transaction: t
-        });
-
-        if (!existingMapping) {
-            await HostelUserRoleMapping.create(
-                {
-                    userId: user.id,
-                    hostelId,
-                    roleId: role.id
-                },
-                { transaction: t }
-            );
-        }
-
-        await t.commit();
-        return user;
-
-    } catch (err) {
-        await t.rollback();
-        throw err;
-    }
-};
-
 
 exports.getRoles = async () => {
     return await Role.findAll();
@@ -201,39 +140,4 @@ exports.resetPassword = async (email, otp, newPassword) => {
         await t.rollback();
         throw err;
     }
-};
-
-exports.getHostelsForUser = async (userId) => {
-    const user = await User.findByPk(userId, {
-        include: [
-            { model: Role, as: 'roles' },
-            { model: Hostel, as: 'hostels', through: { attributes: [] } }
-        ]
-    });
-
-    if (!user) {
-        throw new Error("User not found");
-    }
-
-    // Get all role names
-    const roleNames = user.roles.map(role => role.name);
-
-    // Get assigned hostels directly via alias
-    const assignedHostels = user.hostels; // already array of Hostel objects
-
-    if (assignedHostels.length === 0) {
-        throw new Error("No hostels assigned for this user");
-    }
-
-    // If user is a STUDENT, return only the first hostel
-    if (roleNames.includes('STUDENT')) {
-        return assignedHostels[0];
-    }
-
-    // For SUPER_ADMIN, STAFF, ADMIN → return all assigned hostels
-    if (roleNames.some(r => ['SUPER_ADMIN', 'STAFF', 'ADMIN'].includes(r))) {
-        return assignedHostels;
-    }
-
-    throw new Error("Role not supported for fetching hostels");
 };

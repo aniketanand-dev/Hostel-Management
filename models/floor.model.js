@@ -2,7 +2,8 @@ module.exports = (sequelize, DataTypes) => {
     const Floor = sequelize.define('Floor', {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         floorNumber: { type: DataTypes.INTEGER, allowNull: false },
-        buildingId: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'building', key: 'id' }, onDelete: 'CASCADE' }
+        buildingId: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'building', key: 'id' }, onDelete: 'CASCADE' },
+        isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
     }, {
         tableName: 'floor',
         timestamps: true

@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         hostelName: { type: DataTypes.STRING, allowNull: false, unique: true },
         location: { type: DataTypes.STRING, allowNull: false },
+        isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
         capacity: { type: DataTypes.INTEGER, allowNull: false }
     }, {
         tableName: 'hostels',

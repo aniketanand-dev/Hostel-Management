@@ -8,7 +8,7 @@ exports.generateLoginToken = (user) => {
     return jwt.sign(
         { id: user.id, email: user.email, type: 'login', roles: user.roles },
         JWT_SECRET,
-        { expiresIn: '1h' }
+        //{ expiresIn: '1h' }
     );
 };
 

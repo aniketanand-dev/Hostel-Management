@@ -1,42 +1,147 @@
 const onboardingService = require('./../services/on-boarding.service');
-const { User, Role, HostelUserRoleMapping} = require('../../models');
+const { sequelize, Hostel, User, Role, HostelUserRoleMapping } = require('./../../models/index');
+const { hashPassword } = require('./../utils/hash.util');
 
-exports.createHostel = async (req, res) => {
+exports.createHostelWithSuperAdmin = async (req, res) => {
+    const t = await sequelize.transaction();
     try {
-        const hostel = await onboardingService.createHostel(req.body);
-        res.status(201).json(hostel);
+        const { hostelName, location, capacity, admin } = req.body;
+        // admin = { name, email, password }
+
+        if (!admin || !admin.email || !admin.password || !admin.name) {
+            throw new Error("Admin details are required with name, email, and password");
+        }
+
+        // 1. Create the hostel
+        const hostel = await Hostel.create(
+            { hostelName, location, capacity },
+            { transaction: t }
+        );
+
+        // 2. Check if user already exists
+        let user = await User.findOne({ where: { email: admin.email }, transaction: t });
+
+        if (!user) {
+            // Hash the password before saving
+            const hashedPassword = await hashPassword(admin.password);
+
+            // Create the user
+            user = await User.create(
+                { name: admin.name, email: admin.email, password: hashedPassword },
+                { transaction: t }
+            );
+        }
+
+        // 3. Find the SUPER_ADMIN role
+        const role = await Role.findOne({ where: { name: 'SUPER_ADMIN' }, transaction: t });
+        if (!role) {
+            throw new Error("SUPER_ADMIN role not found");
+        }
+
+        // 4. Map the user to the hostel with SUPER_ADMIN role
+        const existingMapping = await HostelUserRoleMapping.findOne({
+            where: {
+                userId: user.id,
+                hostelId: hostel.id,
+                roleId: role.id
+            },
+            transaction: t
+        });
+
+        if (!existingMapping) {
+            await HostelUserRoleMapping.create(
+                {
+                    userId: user.id,
+                    hostelId: hostel.id,
+                    roleId: role.id
+                },
+                { transaction: t }
+            );
+        }
+
+        // 5. Commit the transaction
+        await t.commit();
+
+        // 6. Return success response
+        return res.status(201).json({
+            success: true,
+            message: "Hostel and Super Admin created successfully",
+            data: {
+                hostel,
+                superAdmin: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email
+                }
+            }
+        });
+
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        // Rollback transaction on error
+        await t.rollback();
+
+        console.error("Error creating hostel and super admin:", err);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to create hostel and super admin",
+            error: err.message
+        });
     }
 };
 
-exports.createSuperAdmin = async (req, res) => {
+exports.createUser = async (req, res) => {
+    const t = await sequelize.transaction();
     try {
-        const user = await onboardingService.createUserWithRole({ ...req.body, roleName: 'SUPER_ADMIN' });
-        res.status(201).json({ user, message: 'Super Admin created' });
+        const { name, email, password, hostelId, roleName } = req.body;
+
+        if (!roleName || !['STUDENT', 'STAFF'].includes(roleName)) {
+            return res.status(400).json({ error: 'Invalid or missing roleName. Allowed values: STUDENT, STAFF' });
+        }
+
+        // Check if user exists
+        let user = await User.findOne({ where: { email }, transaction: t });
+
+        if (!user) {
+            const hashedPassword = await hashPassword(password);
+            user = await User.create(
+                { name, email, password: hashedPassword },
+                { transaction: t }
+            );
+        }
+
+        // Find the role
+        const role = await Role.findOne({ where: { name: roleName }, transaction: t });
+        if (!role) throw new Error(`${roleName} role not found`);
+        
+        // Check if mapping exists
+        const existingMapping = await HostelUserRoleMapping.findOne({
+            where: {
+                userId: user.id,
+                hostelId,
+                roleId: role.id
+            },
+            transaction: t
+        });
+
+        // Create mapping if not exists
+        if (!existingMapping) {
+            await HostelUserRoleMapping.create(
+                {
+                    userId: user.id,
+                    hostelId,
+                    roleId: role.id
+                },
+                { transaction: t }
+            );
+        }
+
+        await t.commit();
+        res.status(201).json({ user, message: `${roleName.charAt(0) + roleName.slice(1).toLowerCase()} created` });
+
     } catch (err) {
-        console.log(err);
-
-        res.status(500).json({ error: err.message });
-    }
-};
-
-exports.createStudent = async (req, res) => {
-    try {
-        const user = await onboardingService.createUserWithRole({ ...req.body, roleName: 'STUDENT' });
-        res.status(201).json({ user, message: 'Student created' });
-    } catch (err) {
-        console.log(err);
-
-        res.status(500).json({ error: err.message });
-    }
-};
-
-exports.createStaff = async (req, res) => {
-    try {
-        const user = await onboardingService.createUserWithRole({ ...req.body, roleName: 'STAFF' });
-        res.status(201).json({ user, message: 'Staff created' });
-    } catch (err) {
+        await t.rollback();
+        console.error(err);
         res.status(500).json({ error: err.message });
     }
 };
@@ -142,16 +247,43 @@ exports.getHostelsForUser = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const hostels = await onboardingService.getHostelsForUser(userId);
+        // Fetch user with roles and hostels
+        const user = await User.findByPk(userId, {
+            include: [
+                { model: Role, as: 'roles' },
+                { model: Hostel, as: 'hostels', through: { attributes: [] } }
+            ]
+        });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        const roleNames = user.roles.map(role => role.name);
+        const assignedHostels = user.hostels;
+
+        if (assignedHostels.length === 0) {
+            return res.status(404).json({ success: false, message: "No hostels assigned for this user" });
+        }
+
+        let data;
+
+        if (roleNames.includes('STUDENT')) {
+            data = assignedHostels[0]; // return only first hostel for students
+        } else if (roleNames.some(r => ['SUPER_ADMIN', 'STAFF', 'ADMIN'].includes(r))) {
+            data = assignedHostels; // return all hostels for others
+        } else {
+            return res.status(403).json({ success: false, message: "Role not supported for fetching hostels" });
+        }
 
         res.status(200).json({
             success: true,
-            data: hostels
+            data
         });
-    } catch (err) {
-        console.log(err);
 
-        res.status(400).json({ success: false, message: err.message });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: err.message });
     }
 };
 
@@ -165,7 +297,7 @@ exports.getAllStudents = async (req, res) => {
                 { model: User, attributes: ['id', 'name', 'email'] },
                 { model: Role, attributes: ['id', 'name'] }
             ],
-            where: { 
+            where: {
                 roleId: 5, // student role
                 ...(hId && { hostelId: hId })
             }
@@ -186,8 +318,8 @@ exports.getStudentById = async (req, res) => {
         const { gId } = req.query;
 
         const student = await HostelUserRoleMapping.findOne({
-            where: { 
-                userId: id, 
+            where: {
+                userId: id,
                 roleId: 5,
                 ...(gId && { hostelId: gId })
             },

@@ -2,7 +2,8 @@ module.exports = (sequelize, DataTypes) => {
     const Bed = sequelize.define('Bed', {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         roomId: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'room', key: 'id' }, onDelete: 'CASCADE' },
-        bedNumber: { type: DataTypes.STRING, allowNull: false }
+        bedNumber: { type: DataTypes.STRING, allowNull: false },
+        isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
     }, {
         tableName: 'bed',
         timestamps: true

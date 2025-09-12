@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         bedId: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'bed', key: 'id' }, onDelete: 'CASCADE' },
         startDate: { type: DataTypes.DATE, allowNull: false },
         endDate: { type: DataTypes.DATE, allowNull: true },
+        isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
         status: { type: DataTypes.ENUM('ACTIVE', 'CANCELLED', 'COMPLETED'), allowNull: false, defaultValue: 'ACTIVE' }
     }, {
         tableName: 'roomAllocation',
