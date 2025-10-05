@@ -67,13 +67,11 @@ exports.loginUser = async ({ email, password }) => {
 
     const token = generateLoginToken(user);
 
-    // Fetch all role mappings
     const mappings = await HostelUserRoleMapping.findAll({
         where: { userId: user.id },
         include: [{ model: Role, attributes: ['id', 'name'] }]
     });
 
-    // Deduplicate roles
     const roleMap = {};
     mappings.forEach(m => {
         const roleName = m.Role.name;
@@ -88,6 +86,7 @@ exports.loginUser = async ({ email, password }) => {
 
     return { user, token, roles };
 };
+
 
 
 exports.sendForgetPasswordOtp = async (email) => {

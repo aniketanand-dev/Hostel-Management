@@ -17,7 +17,7 @@ const roomAllocationRouter = require('./routes/room-allocation.routes');
 
 
 
-app.use('/api/onboarding', onboardingRouter);
+app.use('/api/v1', onboardingRouter);
 app.use('/api/v1', buildingRouter);
 app.use('/api/v1', floorRouter);
 app.use('/api/v1', roomRouter);

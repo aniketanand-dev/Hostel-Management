@@ -113,7 +113,7 @@ exports.createUser = async (req, res) => {
         // Find the role
         const role = await Role.findOne({ where: { name: roleName }, transaction: t });
         if (!role) throw new Error(`${roleName} role not found`);
-        
+
         // Check if mapping exists
         const existingMapping = await HostelUserRoleMapping.findOne({
             where: {
@@ -178,6 +178,8 @@ exports.verifyOtp = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log(email);
+
         const result = await onboardingService.loginUser({ email, password });
 
         res.status(200).json({
@@ -186,24 +188,35 @@ exports.login = async (req, res) => {
             data: {
                 //user: result.user,
                 token: result.token,
-                roles: result.roles
+                //roles: result.roles
             }
         });
     } catch (err) {
-        if (err.message.includes('Password not updated')) {
-            return res.status(400).json({
+        let statusCode = 400;
+
+        // Match different errors with correct HTTP codes
+        if (err.message.includes('User not found')) {
+            statusCode = 404; // Not Found
+        } else if (err.message.includes('Email not verified')) {
+            statusCode = 403; // Forbidden
+        } else if (err.message.includes('Password not updated')) {
+            statusCode = 403; // Forbidden
+            return res.status(statusCode).json({
                 success: false,
                 message: err.message,
                 passwordUpdate: false
             });
+        } else if (err.message.includes('Incorrect password')) {
+            statusCode = 401; // Unauthorized
         }
 
-        res.status(400).json({
+        res.status(statusCode).json({
             success: false,
             message: err.message
         });
     }
 };
+
 
 
 

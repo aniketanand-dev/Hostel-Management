@@ -17,6 +17,8 @@ const { createHostelWithSuperAdmin,
 
 const { getHome } = require('./../controllers/home.controller');
 
+const { practice } = require('./../controllers/test.controller')
+
 const { verifyToken } = require('./../middleware/auth.middleware');
 
 // 1. Create Hostel with admin
@@ -74,5 +76,7 @@ router.get('/students/:id', getStudentById);
 
 router.get('/staff', getAllStaff);
 router.get('/staff/:id', getStaffById);
+
+router.post('/test', practice)
 
 module.exports = router;
