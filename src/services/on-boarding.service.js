@@ -65,13 +65,14 @@ exports.loginUser = async ({ email, password }) => {
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) throw new Error('Incorrect password');
 
-    const token = generateLoginToken(user);
 
     const mappings = await HostelUserRoleMapping.findAll({
         where: { userId: user.id },
         include: [{ model: Role, attributes: ['id', 'name'] }]
     });
-
+    const token = generateLoginToken(user, mappings[0].hostelId);
+    //console.log(, "mappings");
+    
     const roleMap = {};
     mappings.forEach(m => {
         const roleName = m.Role.name;
@@ -119,7 +120,13 @@ exports.sendForgetPasswordOtp = async (email) => {
 exports.resetPassword = async (email, otp, newPassword) => {
     const t = await sequelize.transaction();
     try {
+        console.log(email);
+        console.log(otp);
+        console.log(newPassword);
+
         const record = await OTP.findOne({ where: { email, otp }, transaction: t });
+        console.log(record);
+
         if (!record) {
             throw new Error("Invalid or expired OTP");
         }

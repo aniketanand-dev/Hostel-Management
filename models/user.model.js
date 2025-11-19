@@ -13,10 +13,25 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.associate = (models) => {
-        User.belongsToMany(models.Hostel, { through: models.HostelUserRoleMapping, foreignKey: 'userId', as: 'hostels' });
-        User.belongsToMany(models.Role, { through: models.HostelUserRoleMapping, foreignKey: 'userId', as: 'roles' });
+        User.belongsToMany(models.Hostel, {
+            through: models.HostelUserRoleMapping,
+            foreignKey: 'userId',
+            otherKey: 'hostelId',
+            as: 'hostels',
+            uniqueKey: 'hostel_user_role_unique_idx'  // match composite index
+        });
+
+        User.belongsToMany(models.Role, {
+            through: models.HostelUserRoleMapping,
+            foreignKey: 'userId',
+            otherKey: 'roleId',
+            as: 'roles',
+            uniqueKey: 'hostel_user_role_unique_idx'
+        });
+
         User.hasMany(models.HostelUserRoleMapping, { foreignKey: 'userId' });
         User.hasMany(models.RoomAllocation, { foreignKey: 'userId' });
     };
+
     return User;
 };

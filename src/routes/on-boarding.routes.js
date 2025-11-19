@@ -44,7 +44,6 @@ router.post('/hostel', createHostelWithSuperAdmin);
 //    "roleName": "STUDENT"
 //}
 
-router.post('/user', createUser);
 
 // 5. Get all Roles
 router.get('/roles', getRoles);
@@ -66,6 +65,7 @@ router.post('/forget/password', sendForgetPasswordOtp);
 router.post('/resetPassword', resetPassword);
 
 router.use(verifyToken);
+router.post('/user', createUser);
 
 router.get('/hostels', getHostelsForUser);
 

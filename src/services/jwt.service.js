@@ -4,11 +4,11 @@ const env = require('./../config/env.config');
 
 const JWT_SECRET = env.SECRET_KEY || 'your_jwt_secret';
 
-exports.generateLoginToken = (user) => {
+exports.generateLoginToken = (user, hId) => {
     //console.log(user);
 
     return jwt.sign(
-        { id: user.id, email: user.email, type: 'login'},
+        { id: user.id, hId: hId, email: user.email, type: 'login' },
         JWT_SECRET,
         //{ expiresIn: '1h' }
     );

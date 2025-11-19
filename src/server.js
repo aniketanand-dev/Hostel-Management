@@ -24,7 +24,7 @@ app.use('/api/v1', roomRouter);
 app.use('/api/v1', bedRouter);
 app.use('/api/v1', roomAllocationRouter);
 
-db.sequelize.sync({ alter: true }).then(() => {
+db.sequelize.sync({ alter: false }).then(() => {
     console.log('Database synced');
 
     app.listen(PORT, () => {

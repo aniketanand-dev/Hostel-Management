@@ -1,10 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const HostelUserRoleMapping = sequelize.define('HostelUserRoleMapping', {
-        id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-        },
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         userId: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -25,15 +21,21 @@ module.exports = (sequelize, DataTypes) => {
         },
         isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
     }, {
-        tableName: 'hostelUserRoleMappings',
-        timestamps: true
+        tableName: 'hostelUserRoleMappingNews',
+        timestamps: true,
+        indexes: [
+            {
+                unique: true,
+                fields: ['userId', 'hostelId', 'roleId'],
+                name: 'hostel_user_role_unique_idx'
+            },
+        ],
     });
 
-
     HostelUserRoleMapping.associate = (models) => {
-        HostelUserRoleMapping.belongsTo(models.User, { foreignKey: 'userId' });
-        HostelUserRoleMapping.belongsTo(models.Hostel, { foreignKey: 'hostelId' });
-        HostelUserRoleMapping.belongsTo(models.Role, { foreignKey: 'roleId' });
+        HostelUserRoleMapping.belongsTo(models.User, { foreignKey: 'userId', constraints: false });
+        HostelUserRoleMapping.belongsTo(models.Hostel, { foreignKey: 'hostelId', constraints: false });
+        HostelUserRoleMapping.belongsTo(models.Role, { foreignKey: 'roleId', constraints: false });
     };
 
     return HostelUserRoleMapping;

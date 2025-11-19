@@ -93,8 +93,8 @@ exports.createHostelWithSuperAdmin = async (req, res) => {
 exports.createUser = async (req, res) => {
     const t = await sequelize.transaction();
     try {
-        const { name, email, password, hostelId, roleName } = req.body;
-
+        const { name, email, password = "123456", roleName } = req.body;
+        const hostelId = req.user.hId
         if (!roleName || !['STUDENT', 'STAFF'].includes(roleName)) {
             return res.status(400).json({ error: 'Invalid or missing roleName. Allowed values: STUDENT, STAFF' });
         }
@@ -103,6 +103,7 @@ exports.createUser = async (req, res) => {
         let user = await User.findOne({ where: { email }, transaction: t });
 
         if (!user) {
+            console.log(user);
             const hashedPassword = await hashPassword(password);
             user = await User.create(
                 { name, email, password: hashedPassword },

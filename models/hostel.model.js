@@ -11,8 +11,13 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Hostel.associate = (models) => {
-        Hostel.belongsToMany(models.User, { through: models.HostelUserRoleMapping, foreignKey: 'hostelId' });
-        Hostel.belongsToMany(models.Role, { through: models.HostelUserRoleMapping, foreignKey: 'hostelId' });
+        Hostel.belongsToMany(models.Role, {
+            through: models.HostelUserRoleMapping,
+            foreignKey: 'hostelId',
+            otherKey: 'roleId',
+            uniqueKey: 'hostel_user_role_unique_idx'
+        });
+
         Hostel.hasMany(models.Building, { foreignKey: 'hostelId' });
         Hostel.hasMany(models.HostelUserRoleMapping, { foreignKey: 'hostelId' });
     };
