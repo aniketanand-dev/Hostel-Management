@@ -14,9 +14,10 @@ const bedRouter = require('./routes/bed.routes');
 
 const roomAllocationRouter = require('./routes/room-allocation.routes');
 
+const testNw = require('./routes/test.routes')
 
 
-
+app.use('/api/v1', testNw)
 app.use('/api/v1', onboardingRouter);
 app.use('/api/v1', buildingRouter);
 app.use('/api/v1', floorRouter);
