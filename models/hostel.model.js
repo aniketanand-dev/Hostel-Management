@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         hostelName: { type: DataTypes.STRING, allowNull: false, unique: true },
         location: { type: DataTypes.STRING, allowNull: false },
-        isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+        isActive: { type: DataTypes.BOOLEAN, defaultValue: true },
         capacity: { type: DataTypes.INTEGER, allowNull: false }
     }, {
         tableName: 'hostels',
@@ -11,11 +11,18 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Hostel.associate = (models) => {
+        Hostel.belongsToMany(models.User, {
+            through: models.HostelUserRoleMapping,
+            foreignKey: 'hostelId',
+            otherKey: 'userId',
+            as: 'users'
+        });
+
         Hostel.belongsToMany(models.Role, {
             through: models.HostelUserRoleMapping,
             foreignKey: 'hostelId',
             otherKey: 'roleId',
-            uniqueKey: 'hostel_user_role_unique_idx'
+            as: 'roles'
         });
 
         Hostel.hasMany(models.Building, { foreignKey: 'hostelId' });

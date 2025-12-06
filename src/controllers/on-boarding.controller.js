@@ -1,6 +1,7 @@
 const onboardingService = require('./../services/on-boarding.service');
 const { sequelize, Hostel, User, Role, HostelUserRoleMapping } = require('./../../models/index');
 const { hashPassword } = require('./../utils/hash.util');
+const { generateLoginToken } = require('./../services/jwt.service');
 
 exports.createHostelWithSuperAdmin = async (req, res) => {
     const t = await sequelize.transaction();
@@ -91,8 +92,8 @@ exports.createHostelWithSuperAdmin = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
-    const t = await sequelize.transaction();
     try {
+        const t = await sequelize.transaction();
         const { name, email, password = "123456", roleName } = req.body;
         const hostelId = req.user.hId
         if (!roleName || !['STUDENT', 'STAFF'].includes(roleName)) {
@@ -259,47 +260,70 @@ exports.resetPassword = async (req, res) => {
 
 exports.getHostelsForUser = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const { id, email } = req.user;
 
-        // Fetch user with roles and hostels
-        const user = await User.findByPk(userId, {
+        const mappings = await HostelUserRoleMapping.findAll({
+            where: { userId: id, isActive: true },
             include: [
-                { model: Role, as: 'roles' },
-                { model: Hostel, as: 'hostels', through: { attributes: [] } }
+                {
+                    model: Hostel,
+                    attributes: ["hostelName", "location", "capacity"]
+                },
+                {
+                    model: Role,
+                    attributes: ["id", "name"]
+                }
             ]
         });
 
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
+        if (!mappings.length) {
+            return res.status(404).json({ success: false, message: "No hostel assigned" });
         }
 
-        const roleNames = user.roles.map(role => role.name);
-        const assignedHostels = user.hostels;
+        const roles = [...new Set(mappings.map(m => m.Role.name))];
 
-        if (assignedHostels.length === 0) {
-            return res.status(404).json({ success: false, message: "No hostels assigned for this user" });
-        }
+        const hostels = mappings.map(m => ({
+            hostel: m.Hostel,
+            hostelId: m.hostelId,
+            roleId: m.roleId,
+            roleName: m.Role.name
+        }));
 
-        let data;
+        let allowedHostels;
 
-        if (roleNames.includes('STUDENT')) {
-            data = assignedHostels[0]; // return only first hostel for students
-        } else if (roleNames.some(r => ['SUPER_ADMIN', 'STAFF', 'ADMIN'].includes(r))) {
-            data = assignedHostels; // return all hostels for others
+        if (roles.includes("STUDENT")) {
+            allowedHostels = [hostels[0]];
         } else {
-            return res.status(403).json({ success: false, message: "Role not supported for fetching hostels" });
+            allowedHostels = hostels;
         }
 
-        res.status(200).json({
+        const tokens = allowedHostels.map(h => {
+            const payload = {
+                id,
+                email,
+                hId: h.hostelId,
+                roleId: h.roleId,
+                type: "login"
+            };
+
+            return {
+                hostelName: h.hostel.hostelName,
+                roleName: h.roleName,
+                token: generateLoginToken(payload)
+            };
+        });
+
+        return res.status(200).json({
             success: true,
-            data
+            tokens
         });
 
     } catch (err) {
         console.error(err);
-        res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: err.message });
     }
 };
+
 
 
 exports.getAllStudents = async (req, res) => {
@@ -392,3 +416,69 @@ exports.getStaffById = async (req, res) => {
         res.status(500).json({ success: false, message: 'Something went wrong' });
     }
 };
+
+
+exports.getRolesForLoggedInUserAndHostel = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const hostelId = req.user.hId;
+        const email = req.user.email;
+
+        if (!userId || !hostelId) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing userId or hostelId in token"
+            });
+        }
+
+        const mappings = await HostelUserRoleMapping.findAll({
+            where: {
+                userId,
+                hostelId,
+                isActive: true
+            },
+            include: [
+                {
+                    model: Role,
+                    attributes: ["id", "name"]
+                }
+            ]
+        });
+
+        if (!mappings.length) {
+            return res.status(404).json({
+                success: false,
+                message: "No roles assigned for this user in this hostel"
+            });
+        }
+
+        // Generate one token per role
+        const result = mappings.map(m => {
+            const payload = {
+                id: userId,
+                hId: hostelId,
+                rId: m.roleId,
+                email,
+                type: "login"
+            };
+
+            return {
+                roleName: m.Role.name,
+                token: generateLoginToken(payload)
+            };
+        });
+
+        return res.status(200).json({
+            success: true,
+            roles: result
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+};
+

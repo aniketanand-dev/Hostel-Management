@@ -64,15 +64,16 @@ exports.loginUser = async ({ email, password }) => {
 
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) throw new Error('Incorrect password');
+    //console.log(isMatch);
 
 
     const mappings = await HostelUserRoleMapping.findAll({
         where: { userId: user.id },
         include: [{ model: Role, attributes: ['id', 'name'] }]
     });
-    const token = generateLoginToken(user, mappings[0].hostelId);
-    //console.log(, "mappings");
-    
+    const token = generateLoginToken({ id: user.id, hId: mappings[0].hostelId });
+    //console.log(mappings, "mappings");
+
     const roleMap = {};
     mappings.forEach(m => {
         const roleName = m.Role.name;
@@ -80,10 +81,12 @@ exports.loginUser = async ({ email, password }) => {
         roleMap[roleName].push(m.hostelId);
     });
 
+    //console.log(roleMap);
     const roles = Object.keys(roleMap).map(roleName => ({
         role: roleName,
         hostels: roleMap[roleName]
     }));
+    //console.log(roles);
 
     return { user, token, roles };
 };

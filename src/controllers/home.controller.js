@@ -19,19 +19,18 @@ exports.getHome = async (req, res) => {
                 }
             ]
         });
+       
 
         if (!mapping) {
             return res.status(404).json({ success: false, message: 'User role mapping not found' });
         }
 
-        const role = mapping.Role.name;   // get actual role name
+        const role = mapping?.Role.name;
         const hostelId = mapping.hostelId;
 
         const features = HomeService.getFeaturesByRole(role);
 
         const data = {
-            userId,
-            role,
             hostelId,
             features
         };

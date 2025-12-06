@@ -12,7 +12,7 @@ const { createHostelWithSuperAdmin,
     getAllStudents,
     getStudentById,
     getAllStaff,
-    getStaffById
+    getStaffById, getRolesForLoggedInUserAndHostel
 } = require('./../controllers/on-boarding.controller');
 
 const { getHome } = require('./../controllers/home.controller');
@@ -68,6 +68,8 @@ router.use(verifyToken);
 router.post('/user', createUser);
 
 router.get('/hostels', getHostelsForUser);
+
+router.get('/user-role', getRolesForLoggedInUserAndHostel);
 
 router.get('/home', getHome);
 

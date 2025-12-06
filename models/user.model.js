@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         email: { type: DataTypes.STRING, allowNull: false, unique: true, validate: { isEmail: true } },
         password: { type: DataTypes.STRING, allowNull: false },
         isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
-        isActive: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: true },
+        isActive: { type: DataTypes.BOOLEAN, defaultValue: true },
         passwordUpdated: { type: DataTypes.BOOLEAN, defaultValue: false }
     }, {
         tableName: 'users',
@@ -17,16 +17,14 @@ module.exports = (sequelize, DataTypes) => {
             through: models.HostelUserRoleMapping,
             foreignKey: 'userId',
             otherKey: 'hostelId',
-            as: 'hostels',
-            uniqueKey: 'hostel_user_role_unique_idx'  // match composite index
+            as: 'hostels'
         });
 
         User.belongsToMany(models.Role, {
             through: models.HostelUserRoleMapping,
             foreignKey: 'userId',
             otherKey: 'roleId',
-            as: 'roles',
-            uniqueKey: 'hostel_user_role_unique_idx'
+            as: 'roles'
         });
 
         User.hasMany(models.HostelUserRoleMapping, { foreignKey: 'userId' });
