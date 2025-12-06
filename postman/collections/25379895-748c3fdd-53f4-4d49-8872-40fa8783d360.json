@@ -1,0 +1,769 @@
+{
+	"info": {
+		"_postman_id": "25379895-748c3fdd-53f4-4d49-8872-40fa8783d360",
+		"name": "HSM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "On-Boarding",
+			"item": [
+				{
+					"name": "Create Hostel",
+					"id": "25379895-6803eb81-5704-4052-bd76-0e8e44966793",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"hostelName\": \"Green Hostel\",\n    \"location\": \"City Center\",\n    \"capacity\": 150,\n    \"admin\": {\n        \"name\": \"Admin User\",\n        \"email\": \"admin@example.com\",\n        \"password\": \"securepassword\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/hostel",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"hostel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleted Create Super Admin",
+					"id": "25379895-90ad1875-6d2e-42de-8dab-36ca4a8add4b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Aniket\",\n    \"email\": \"admin141212@example.com\",\n    \"password\": \"123456\",\n    \"hostelId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/onboarding/superadmin",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"onboarding",
+								"superadmin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleted Create Student",
+					"id": "25379895-2fb6e1ac-313b-43dd-884f-1ded16c64d67",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Aman\",\n    \"email\": \"Aman12345@example.com\",\n    \"password\": \"123456\",\n    \"hostelId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/onboarding/student",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"onboarding",
+								"student"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"id": "25379895-d9516778-3898-4073-b058-b74bb7bb795d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInR5cGUiOiJsb2dpbiIsImlhdCI6MTc1NzYxODgwMX0.Px53KLKNOBGa8KQlBwkgsWPyDhINeh-SEXYjdX0SuFE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Aniket\",\n    \"email\": \"admin7209420@example.com\",\n    \"password\": \"123456\",\n    \"hostelId\": 1,\n    \"roleName\": \"STUDENT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/onboarding/user",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"onboarding",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send OTP",
+					"id": "25379895-e394d582-332b-4e20-a6ac-e6c36359fc04",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"aniket72094087100@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/onboarding/otp/send",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"onboarding",
+								"otp",
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"id": "25379895-df46d987-c68b-45c7-a43d-19d516658b30",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"Aniket720940897100@gmail.com\",\n    \"password\": \"123456\"\n}\n\n// {\n//     \"email\": \"admin720984@example.com\",\n//     \"password\": \"1212\"\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"id": "25379895-faaa9384-c2bf-44e4-b941-54a70e7060ac",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"otp\": \"244516\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/otp/verify",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"otp",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgetPassword OTP",
+					"id": "25379895-8609b3ae-e68a-4cdf-b759-f6da138c0afa",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"Aniket720940897100@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/forget/password",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"forget",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"id": "25379895-6c93f620-8acf-4d28-b6f0-1fe4fa613052",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"otp\": \"318963\",\n    \"newPassword\": \"123456\",\n    \"confirmPassword\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/resetPassword",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"resetPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get hostel",
+					"id": "25379895-9d459bb1-ea45-44a4-a4c9-38e3b3122dc1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInR5cGUiOiJsb2dpbiIsImlhdCI6MTc1NzYxODgwMX0.Px53KLKNOBGa8KQlBwkgsWPyDhINeh-SEXYjdX0SuFE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/hostels",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"hostels"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get hostel role",
+					"id": "25379895-15c66edd-09c4-4b04-8f60-135fe90009c8",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsImhJZCI6Miwicm9sZUlkIjoxLCJ0eXBlIjoibG9naW4iLCJpYXQiOjE3NjQ2MTk5NTh9.ZVUxuFBubhNKsqsRpLWroIS3k2MX6Gp1KMeJFGqdlHI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/user-role",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user-role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Home api",
+					"id": "25379895-f07e90b1-e7b1-42a7-9f80-ef467964077d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/v1/home",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"home"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get student based on hsotelId",
+					"id": "25379895-b46749cd-36fd-43bc-bb5d-9d120ceabb16",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInR5cGUiOiJsb2dpbiIsImlhdCI6MTc1NzYxODgwMX0.Px53KLKNOBGa8KQlBwkgsWPyDhINeh-SEXYjdX0SuFE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/api/onboarding/students?hId=1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"onboarding",
+								"students"
+							],
+							"query": [
+								{
+									"key": "hId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "whatsapp",
+					"id": "25379895-60625c7e-e36d-4c01-a71b-5ed53113bb37",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "EAAJ4luZBMeFQBPWFWHJ3bOScL0jwgqZBmOdyIS8GPE7JqQ6yZCFsbSYAkSU2aeXTZCZCsETc83BBaKJUz0FidQgRA1Vtw0WWs7sZCWLswZAXaNCfNKvgeEZBZARgnkG9onuaKTjmP9ZBZBdXFrTrJ2C74YKHIJlsxXfWZBBI08UZBXLFouNY0UjMZASPZAnvrfXqpcNlwdgvW5eo6PlZCZBKlgX85LEvan5lPqrTgncKO1ZCf2tndijQZDZD",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer EAAJ4luZBMeFQBPWFWHJ3bOScL0jwgqZBmOdyIS8GPE7JqQ6yZCFsbSYAkSU2aeXTZCZCsETc83BBaKJUz0FidQgRA1Vtw0WWs7sZCWLswZAXaNCfNKvgeEZBZARgnkG9onuaKTjmP9ZBZBdXFrTrJ2C74YKHIJlsxXfWZBBI08UZBXLFouNY0UjMZASPZAnvrfXqpcNlwdgvW5eo6PlZCZBKlgX85LEvan5lPqrTgncKO1ZCf2tndijQZDZD"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"+917209408710\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"hello_world\",\n    \"language\": {\n      \"code\": \"en_US\"\n    }\n  }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://graph.facebook.com/v22.0/792285783968235/messages",
+							"protocol": "https",
+							"host": [
+								"graph",
+								"facebook",
+								"com"
+							],
+							"path": [
+								"v22.0",
+								"792285783968235",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test",
+					"id": "25379895-8c229aa1-6e65-40eb-b1dd-750ed2277f09",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"data\": [\n        {\n            \"name\": \"aniket\",\n            \"age\": 2\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/test",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add student",
+					"id": "25379895-8ea5871b-6962-4277-b7c5-6e5a38e920fd",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US,en;q=0.9"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInR5cGUiOiJsb2dpbiIsImlhdCI6MTc1OTg2MDU3NX0.cAeCHuxUG7QWb50U8LksNlHietqozod3jWczImSyGss"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Linux\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"asd\",\n    \"email\": \"Aniket720940897100@gmail.com\",\n    \"gender\": \"MALE\",\n    \"isActive\": true,\n    \"roleName\": \"STUDENT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/api/v1/user",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get student",
+					"id": "25379895-c366a755-472d-4dcf-acaf-954a67529f6f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "en-US,en;q=0.9"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhZG1pbkBleGFtcGxlLmNvbSIsInR5cGUiOiJsb2dpbiIsImlhdCI6MTc1OTg2MDU3NX0.cAeCHuxUG7QWb50U8LksNlHietqozod3jWczImSyGss"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Linux\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"students"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "25379895-1f67c01c-20b0-4011-89db-f0a76f74dbbb"
+		},
+		{
+			"name": "demo",
+			"id": "25379895-cd80da9d-3fe4-4e95-8da0-394e4fb72f33",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"deviceTokens\": [\n        \"dD08yhZm0GjWuTJ6fLn_cL:APA91bHKmb7eWGfF2k0eMhMLCSzzB-8cXp4Ce9Lz4aH431KWEEOJRV1ElIQl7x2x1m4y1OJ9EU5bMeOiieXnOacCu48PVli5MCUBe9L_ZYCwHcXIFel9gFk\"\n    ],\n    \"message\": \"aniket notification\",\n    \"title\": \"testing\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/notify",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"notify"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
