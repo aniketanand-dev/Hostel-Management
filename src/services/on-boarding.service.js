@@ -123,12 +123,12 @@ exports.sendForgetPasswordOtp = async (email) => {
 exports.resetPassword = async (email, otp, newPassword) => {
     const t = await sequelize.transaction();
     try {
-        console.log(email);
-        console.log(otp);
-        console.log(newPassword);
+        //console.log(email);
+        //console.log(otp);
+        //console.log(newPassword);
 
         const record = await OTP.findOne({ where: { email, otp }, transaction: t });
-        console.log(record);
+        //console.log(record);
 
         if (!record) {
             throw new Error("Invalid or expired OTP");

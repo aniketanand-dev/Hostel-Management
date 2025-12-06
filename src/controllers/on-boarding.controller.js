@@ -104,7 +104,7 @@ exports.createUser = async (req, res) => {
         let user = await User.findOne({ where: { email }, transaction: t });
 
         if (!user) {
-            console.log(user);
+            //console.log(user);
             const hashedPassword = await hashPassword(password);
             user = await User.create(
                 { name, email, password: hashedPassword },
@@ -180,7 +180,7 @@ exports.verifyOtp = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log(email);
+        //console.log(email);
 
         const result = await onboardingService.loginUser({ email, password });
 
