@@ -260,6 +260,8 @@ exports.resetPassword = async (req, res) => {
 
 exports.getHostelsForUser = async (req, res) => {
     try {
+//console.log();
+
         const { id, email } = req.user;
 
         const mappings = await HostelUserRoleMapping.findAll({
