@@ -26,7 +26,7 @@ app.use('/api/v1', bedRouter);
 app.use('/api/v1', roomAllocationRouter);
 
 db.sequelize.sync({ alter: false }).then(() => {
-    console.log('Database synced'); 
+    console.log('Database synced');  
 
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
